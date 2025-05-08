@@ -1,0 +1,92 @@
+import fitz
+from pathlib import Path
+import re
+import zipfile
+import os
+import io
+
+
+def merge_pdfs(POD_pdfs, einzerollkarte_pdfs,bordero_pdfs, output_pdf,Bosch=False):
+    """Merging Einzerollkarte with POD and optionally bordero"""
+    output_files = []
+
+    for pdf in einzerollkarte_pdfs:
+        merged_pdf = fitz.open()
+        current_pdf=fitz.open(pdf)
+        merged_pdf.insert_pdf(current_pdf)
+        if len(POD_pdfs)!=1:
+            print("Too many/little PODs elements,"
+                  " please attach only single POD you want to merge")
+            break
+        else:
+            for pod in POD_pdfs:
+                current_pod=fitz.open(pod)
+                merged_pdf.insert_pdf(current_pod)
+                if Bosch:
+                    if len(bordero_pdfs) != 1:
+                        print("Too many/little PODs elements,"
+                    " please attach only single POD you want to merge")
+                        break
+                    for bordero in bordero_pdfs:
+                        add_bordero(merged_pdf,bordero_pdfs)
+                        merged_pdf.save(output_pdf +str(rename_file(pdf))  + ".pdf")
+                        output_files.append(output_pdf + str(rename_file(pdf)) + ".pdf")
+                        continue
+                elif len(bordero_pdfs) != 0:
+                    print("Bordero is necessary only for bosch."
+                          "Please delete file or mark shipment as such before merging")
+                    break
+                else:
+                    merged_pdf.save(output_pdf+str(rename_file(pdf))+".pdf")
+                    output_files.append(output_pdf+str(rename_file(pdf))+".pdf")
+    return output_files
+
+def merging_status(POD_pdfs, einzerollkarte_pdfs,bordero_pdfs,output_pdf):
+    """Checking if merging was completed correctly, necessary only for testing"""
+    folder_path=Path(output_pdf)
+    output_check=[f for f in folder_path.iterdir() if f.is_file()]
+    if not POD_pdfs:
+        return False
+    elif not einzerollkarte_pdfs:
+        return False
+    elif not bordero_pdfs:
+        return False
+    elif not output_check:
+        return False
+    else:
+        return True
+def check_bordero(bordero_list):
+    """checking if bordero is uploaded"""
+    if not bordero_list:
+        return False
+    else:
+        return True
+
+
+def zip_files(file_paths):
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+        for path in file_paths:
+            filename = os.path.basename(path)
+            with open(path, "rb") as f:
+                zipf.writestr(filename, f.read())
+    buffer.seek(0)
+    return buffer
+
+def add_bordero(merged_pdf,bordero_pdfs):
+    """adding bordero to merged file in case Bosch condition is fullfilled"""
+    for bordero in bordero_pdfs:
+        current_bordero = fitz.open(bordero)
+        merged_pdf.insert_pdf(current_bordero)
+
+def rename_file(file):
+    """Renames file to number on einzerollkarte"""
+    doc=fitz.open(file)
+    page_text=doc.load_page(0)
+    text=page_text.get_text()
+    match=re.search(r'\b\d{16}\b',text)
+    if match:
+        file_name=match.group()
+    else:
+        file_name="merged"
+    return file_name
