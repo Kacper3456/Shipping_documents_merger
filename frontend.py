@@ -1,10 +1,9 @@
 import streamlit as st
 from streamlit import session_state
-import fitz
-
-from pdf_utils import merge_pdfs,zip_files
+from pdf_utils import merge_pdfs,zip_files,convert_to_pdf
 import tempfile
 import os
+from pathlib import Path
 
 st.title("Merger")
 st.header("Merge your files here")
@@ -20,7 +19,7 @@ with st.form("merge_form",clear_on_submit=False):
     uploaded_einzerollkarte=st.file_uploader("Einzerollkarte", type="pdf",
                                              accept_multiple_files=True
     )
-    uploaded_POD = st.file_uploader("POD", type="pdf", accept_multiple_files=False)
+    uploaded_POD = st.file_uploader("POD", type=["pdf","jpeg","jpg","png"], accept_multiple_files=False)
     if Bosch:
         uploaded_Bordero = st.file_uploader("Bordero", type="pdf",
                                             accept_multiple_files=False)
@@ -35,7 +34,6 @@ if merging_button:
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_output:
             #creating temporary pdf file
-
             for file in uploaded_einzerollkarte:
                 #creating separate file for every einzerollkarte
                 temp=tempfile.NamedTemporaryFile(delete=False,suffix=".pdf")
@@ -43,12 +41,20 @@ if merging_button:
                 temp.close()
                 einzerollkarte_paths.append(temp.name)
             # creating separate file for POD file
-            temp_pod = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-            temp_pod.write(uploaded_POD.read())
-            temp_pod.close()
-            pod_paths.append(temp_pod.name)
-            # creating separate file for Bordero file
 
+            # creating separate file for Bordero file
+            if uploaded_POD:
+                pod_format = Path(uploaded_POD.name).suffix.lower()
+                if pod_format in [".jpg", ".jpeg", ".png"]:
+                    # If the POD is an image, convert to PDF
+                    converted_pod_path = convert_to_pdf(uploaded_POD)
+                    pod_paths = [converted_pod_path]  # Replacing pod_paths with one PDF file
+                else:
+                    # If the POD is already a PDF, save it directly
+                        temp_pod = tempfile.NamedTemporaryFile(delete=False,suffix=".pdf")
+                        temp_pod.write(uploaded_POD.read())
+                        temp_pod.close()
+                        pod_paths.append(temp_pod.name)
             temp_output_prefix = tempfile.gettempdir() + os.sep
         if Bosch:
             if uploaded_Bordero:

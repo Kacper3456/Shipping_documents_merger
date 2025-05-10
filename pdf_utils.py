@@ -4,7 +4,8 @@ import re
 import zipfile
 import os
 import io
-
+from PIL import Image
+import tempfile
 
 def merge_pdfs(POD_pdfs, einzerollkarte_pdfs,bordero_pdfs, output_pdf,Bosch=False):
     """Merging Einzerollkarte with POD and optionally bordero"""
@@ -40,7 +41,14 @@ def merge_pdfs(POD_pdfs, einzerollkarte_pdfs,bordero_pdfs, output_pdf,Bosch=Fals
                     merged_pdf.save(output_pdf+str(rename_file(pdf))+".pdf")
                     output_files.append(output_pdf+str(rename_file(pdf))+".pdf")
     return output_files
+def convert_to_pdf(file):
+    image=Image.open(file)
+    rgb_image=image.convert("RGB")
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+        pdf_path = temp_pdf.name
+        rgb_image.save(pdf_path, "PDF")
 
+    return pdf_path
 def merging_status(POD_pdfs, einzerollkarte_pdfs,bordero_pdfs,output_pdf):
     """Checking if merging was completed correctly, necessary only for testing"""
     folder_path=Path(output_pdf)
