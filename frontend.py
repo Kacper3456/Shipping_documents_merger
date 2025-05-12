@@ -5,6 +5,7 @@ from pdf_utils import merge_pdfs,zip_files,convert_to_pdf
 import tempfile
 import os
 from pathlib import Path
+import base64
 
 # Sprawdź, jaki motyw jest ustawiony
 current_theme = st.get_option("theme.base")
@@ -17,10 +18,17 @@ else:
     bg_color = "rgba(255, 255, 255, 0.6)"
     text_color = "black"
 
+def get_base64(file_path):
+    with open(file_path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+bg_img = get_base64("background.jpg")
+
 custom_css = f"""
 <style>
 [data-testid="stAppViewContainer"] {{
-    background-image: url("https://images.freecreatives.com/wp-content/uploads/2016/04/Beautiful-Plain-Website-Background.jpg");
+    background-image: url("data:image/jpg;base64,{bg_img}");
     background-size: cover;
     background-position: center;
 }}
