@@ -1,19 +1,55 @@
 import streamlit as st
 from streamlit import session_state
+import streamlit.components.v1 as components
 from pdf_utils import merge_pdfs,zip_files,convert_to_pdf
 import tempfile
 import os
 from pathlib import Path
 
-st.title("Merger")
-st.header("Merge your files here")
+# Sprawdź, jaki motyw jest ustawiony
+current_theme = st.get_option("theme.base")
+
+# Ustaw tło i style w zależności od motywu
+if current_theme == "dark":
+    bg_color = "rgba(0, 0, 0, 0.6)"
+    text_color = "white"
+else:
+    bg_color = "rgba(255, 255, 255, 0.6)"
+    text_color = "black"
+
+custom_css = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+    background-image: url("https://images.freecreatives.com/wp-content/uploads/2016/04/Beautiful-Plain-Website-Background.jpg");
+    background-size: cover;
+    background-position: center;
+}}
+
+.block-container {{
+    background-color: {bg_color};
+    color: {text_color};
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}}
+[data-testid="stHeader"] {{
+    background-color: rgba(0, 0, 0, 0);
+    color: inherit;
+}}
+</style>
+"""
+
+st.markdown(custom_css, unsafe_allow_html=True)
+
+
 
 if "uploaded_files" not in st.session_state:
     st.session_state["uploaded_files"]=[]
 
+with st.expander("Options"):
+    Bosch = st.checkbox("Bosch shipment")
+    to_zip = st.checkbox("Convert to zip")
 
-Bosch=st.checkbox("Bosch shipment")
-To_zip=st.checkbox("Convert to zip")
 with st.form("merge_form",clear_on_submit=False):
     st.subheader("POD merger for german transports")
     uploaded_einzerollkarte=st.file_uploader("Einzerollkarte", type="pdf",
@@ -74,7 +110,7 @@ if merging_button:
                                       temp_output_prefix, False)
             if merged_files:
                 st.session_state["uploaded_files"]=merged_files
-        if To_zip:
+        if to_zip:
             zip_data = zip_files(st.session_state["uploaded_files"])
 
             st.download_button(
