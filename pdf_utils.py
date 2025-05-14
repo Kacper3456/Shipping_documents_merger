@@ -49,27 +49,6 @@ def convert_to_pdf(file):
         rgb_image.save(pdf_path, "PDF")
 
     return pdf_path
-def merging_status(POD_pdfs, einzerollkarte_pdfs,bordero_pdfs,output_pdf):
-    """Checking if merging was completed correctly, necessary only for testing"""
-    folder_path=Path(output_pdf)
-    output_check=[f for f in folder_path.iterdir() if f.is_file()]
-    if not POD_pdfs:
-        return False
-    elif not einzerollkarte_pdfs:
-        return False
-    elif not bordero_pdfs:
-        return False
-    elif not output_check:
-        return False
-    else:
-        return True
-def check_bordero(bordero_list):
-    """checking if bordero is uploaded"""
-    if not bordero_list:
-        return False
-    else:
-        return True
-
 
 def zip_files(file_paths):
     buffer = io.BytesIO()
