@@ -23,7 +23,7 @@ def get_base64(file_path):
         data = f.read()
     return base64.b64encode(data).decode()
 
-bg_img = get_base64("background2.png")
+bg_img = get_base64("background.jpg")
 
 custom_css = f"""
 <style>
