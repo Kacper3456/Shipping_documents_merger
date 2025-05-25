@@ -10,6 +10,7 @@ import base64
 # Sprawdź, jaki motyw jest ustawiony
 current_theme = st.get_option("theme.base")
 
+
 # Ustaw tło i style w zależności od motywu
 if current_theme == "dark":
     bg_color = "rgba(0, 0, 0, 0.6)"
