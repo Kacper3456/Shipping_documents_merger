@@ -22,6 +22,9 @@ def get_base64(file_path):
     with open(file_path, "rb") as f:
         data = f.read()
     return base64.b64encode(data).decode()
+def remove_files():
+    st.session_state.pop("einzerollkarte", None)
+    st.session_state.pop("POD", None)
 
 bg_img = get_base64("background.jpg")
 
@@ -49,24 +52,40 @@ custom_css = f"""
 
 st.markdown(custom_css, unsafe_allow_html=True)
 
+if "reset_counter" not in st.session_state:
+    st.session_state.reset_counter = 0
+
+# Kliknięcie usuwa pliki i wymusza rerun z nowym kluczem
+if st.button("🗑️Remove all"):
+    st.session_state.reset_counter += 1
+    st.session_state.Bosch_shipment = False
+    st.rerun()
+
+# Tworzymy unikalne klucze, które wymuszają reset widgetów
+uploader_key1 = f"einzerollkarte_{st.session_state.reset_counter}"
+uploader_key2 = f"POD_{st.session_state.reset_counter}"
+uploader_key3=f"Bordero_{st.session_state.reset_counter}"
 
 
 if "uploaded_files" not in st.session_state:
     st.session_state["uploaded_files"]=[]
 
 with st.expander("Options"):
-    Bosch = st.checkbox("Bosch shipment")
+    Bosch = st.checkbox("Bosch shipment",key="Bosch_shipment")
     to_zip = st.checkbox("Convert to zip")
 
 with st.form("merge_form",clear_on_submit=False):
     st.subheader("POD merger for german transports")
     uploaded_einzerollkarte=st.file_uploader("Einzerollkarte", type="pdf",
-                                             accept_multiple_files=True
+                                             accept_multiple_files=True,
+                                             key=uploader_key1
     )
-    uploaded_POD = st.file_uploader("POD", type=["pdf","jpeg","jpg","png"], accept_multiple_files=False)
+    uploaded_POD = st.file_uploader("POD", type=["pdf","jpeg","jpg","png"],
+                                    accept_multiple_files=False,key=uploader_key2)
     if Bosch:
         uploaded_Bordero = st.file_uploader("Bordero", type="pdf",
-                                            accept_multiple_files=False)
+                                            accept_multiple_files=False,
+                                            key=uploader_key3)
     merging_button=st.form_submit_button("Merge")
 if merging_button:
     if uploaded_einzerollkarte and uploaded_POD:
@@ -138,4 +157,3 @@ if merging_button:
                         st.toast("Merged succesfully")
     else:
         st.warning("Einzerollkarte or POD is missing")
-
