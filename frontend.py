@@ -155,5 +155,6 @@ if merging_button:
                         st.download_button(f"Download {filename}", f.read(), file_name=filename,
                                            mime="application/pdf",key=f"download_{i}",on_click="ignore")
                         st.toast("Merged succesfully")
+                        st.balloons()
     else:
         st.warning("Einzerollkarte or POD is missing")
