@@ -156,5 +156,6 @@ if merging_button:
                                            mime="application/pdf",key=f"download_{i}",on_click="ignore")
                         st.toast("Merged succesfully")
                         st.balloons()
+
     else:
         st.warning("Einzerollkarte or POD is missing")
