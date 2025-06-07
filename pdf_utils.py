@@ -77,3 +77,9 @@ def rename_file(file):
     else:
         file_name="merged"
     return file_name
+
+def save_uploaded_file_to_temp_pdf(uploaded_file):
+    uploaded_file.seek(0)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+        temp_file.write(uploaded_file.read())
+        return temp_file.name
