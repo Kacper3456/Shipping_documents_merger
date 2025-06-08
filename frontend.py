@@ -5,36 +5,40 @@ import os
 from pathlib import Path
 import base64
 
-#setting up custom theme
-bg_color = "rgba(255, 255, 255, 0.6)"
-text_color = "Chocolate"
+# change background to background.jpg
 
 
 def get_base64(file_path):
-    with open(file_path, "rb") as f:
-        data = f.read()
+    with open(file_path, "rb") as background:
+        data = background.read()
     return base64.b64encode(data).decode()
-
 
 
 bg_img = get_base64("background.jpg")
 
+# setting up custom theme
+bg_color = "rgba(255, 255, 255, 0.6)"
+text_color = "Chocolate"
+
 custom_css = f"""
 <style>
-[data-testid="stAppViewContainer"] {{
+[data-testid="stAppViewContainer"]
+{{
     background-image: url("data:image/jpg;base64,{bg_img}");
     background-size: cover;
     background-position: center;
 }}
 
-.block-container {{
+.block-container
+{{
     background-color: {bg_color};
     color: {text_color};
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }}
-[data-testid="stHeader"] {{
+[data-testid="stHeader"]
+{{
     background-color: rgba(0, 0, 0, 0);
     color: inherit;
 }}
@@ -43,9 +47,11 @@ custom_css = f"""
 
 st.markdown(custom_css, unsafe_allow_html=True)
 
+
 def remove_files():
     st.session_state.pop("einzerollkarte", None)
     st.session_state.pop("POD", None)
+
 
 if "reset_counter" not in st.session_state:
     st.session_state.reset_counter = 0
@@ -66,12 +72,12 @@ if "uploaded_files" not in st.session_state:
     st.session_state["uploaded_files"] = []
 
 with st.expander("Options"):
-#checkboxes to enable adding bordero and converting output files to zip
+    # checkboxes to enable adding bordero and converting output files to zip
     Bosch = st.checkbox("Bosch shipment", key="Bosch_shipment")
     to_zip = st.checkbox("Convert to zip", key="zip")
 
 with st.form("merge_form", clear_on_submit=False):
-#add form for uploading temporary files and triggering merging
+    # add form for uploading temporary files and triggering merging
     st.subheader("German Transport Document Merger")
     uploaded_einzerollkarte = st.file_uploader("Einzerollkarte", type="pdf",
                                                accept_multiple_files=True,
@@ -98,27 +104,28 @@ if merging_button:
         pod_paths = []
         bordero_paths = []
 
-
-
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_output:
             # save einzerollkarte to temp file
             for file in uploaded_einzerollkarte:
-                einzerollkarte_paths.append(save_uploaded_file_to_temp_pdf(file))
+                einzerollkarte_paths.append(
+                    save_uploaded_file_to_temp_pdf(file))
 
             if uploaded_POD:
-                #check file format and convert to pdf
+                # check file format and convert to pdf
                 pod_format = Path(uploaded_POD.name).suffix.lower()
                 if pod_format in [".jpg", ".jpeg", ".png"]:
                     converted_pod_path = convert_to_pdf(uploaded_POD)
                     pod_paths = [converted_pod_path]
                 else:
-                    pod_paths.append(save_uploaded_file_to_temp_pdf(uploaded_POD))
+                    pod_paths.append(
+                        save_uploaded_file_to_temp_pdf(uploaded_POD))
 
             temp_output_prefix = tempfile.gettempdir() + os.sep
 
         if Bosch and uploaded_Bordero:
-            #add bordero to merged file
-            bordero_paths.append(save_uploaded_file_to_temp_pdf(uploaded_Bordero))
+            # add bordero to merged file
+            bordero_paths.append(
+                save_uploaded_file_to_temp_pdf(uploaded_Bordero))
             merged_files = merge_pdfs(
                 pod_paths,
                 einzerollkarte_paths,
@@ -142,7 +149,7 @@ if merging_button:
                 st.session_state["uploaded_files"] = merged_files
                 st.session_state["show_zip"] = to_zip
         if to_zip:
-            #generate download button for zip file
+            # generate download button for zip file
             zip_data = zip_files(st.session_state["uploaded_files"])
 
             st.download_button(
@@ -153,7 +160,7 @@ if merging_button:
             )
 
         else:
-            #generate separate button for each merged file
+            # generate separate button for each merged file
             for i, path in enumerate(st.session_state["uploaded_files"]):
                 with open(path, "rb") as f:
                     filename = os.path.basename(path)
@@ -167,7 +174,6 @@ if merging_button:
                         key=f"download_{i}",
                         on_click="ignore")
         st.toast("Merged succesfully")
-
 
     else:
         st.warning("Einzerollkarte or POD is missing")

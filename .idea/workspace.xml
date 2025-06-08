@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e0bcceab-a07a-436e-856d-d5e7f032d764" name="Changes" comment="Adding remove all button">
-      <change afterPath="$PROJECT_DIR$/.streamlit/config.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev_tools/dev_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/dev_tools/dev_main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pdf_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/pdf_utils.py" afterDir="false" />
     </list>
@@ -48,25 +47,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.dev_main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "temp-branch",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/kacpe/PycharmProjects/Shipments_Documents_Merger"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.dev_main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/kacpe/PycharmProjects/Shipments_Documents_Merger&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\kacpe\PycharmProjects\Shipments_Documents_Merger" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\kacpe\PycharmProjects\Shipments_Documents_Merger\dev_tools" />
+      <recent name="C:\Users\kacpe\PycharmProjects\Shipments_Documents_Merger" />
       <recent name="C:\Users\kacpe\PycharmProjects\Shipments_Documents_Merger\Bordero" />
       <recent name="C:\Users\kacpe\PycharmProjects\Shipments_Documents_Merger\PODs" />
       <recent name="C:\Users\kacpe\PycharmProjects\Shipments_Documents_Merger\Einzerollkarte" />
-      <recent name="C:\Users\kacpe\PycharmProjects\Shipments_Documents_Merger\dev_tools" />
     </key>
   </component>
   <component name="SharedIndexes">
